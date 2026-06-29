@@ -1,137 +1,133 @@
-# LocalVMSenderby-IP
-
 # Windows HTTP File Share GUI
 
-Ferramenta em PowerShell com interface gráfica para compartilhar temporariamente um arquivo local via HTTP.
+A PowerShell tool with a graphical interface to temporarily share a local file over HTTP.
 
-O objetivo é facilitar a transferência rápida de arquivos entre um computador Windows e uma máquina de destino, como uma VM Linux, servidor local ou host na mesma rede.
+The goal is to make quick file transfers easier between a Windows computer and a destination machine, such as a Linux VM, local server, or host on the same network.
 
-## Funcionalidades
+## Features
 
-* Interface gráfica simples em Windows Forms.
-* Compartilhamento de um único arquivo via HTTP.
-* Geração automática do comando `wget`.
-* Restrição de acesso por IP de destino.
-* Criação automática de regra temporária no Firewall do Windows.
-* Remoção da regra de firewall ao parar o compartilhamento.
-* Compatível com execução via `.bat`.
-* Funciona independente da pasta onde o script esteja salvo.
+* Simple Windows Forms graphical interface.
+* Shares a single file over HTTP.
+* Automatically generates the `wget` command.
+* Restricts access by destination IP address.
+* Automatically creates a temporary Windows Firewall rule.
+* Removes the firewall rule when sharing is stopped.
+* Compatible with execution through a `.bat` file.
+* Works regardless of the folder where the script is stored.
 
-## Arquivos
+## Files
 
 ```text
 Share-File-GUI.bat
 Share-File-GUI.ps1
 ```
 
-O arquivo `.bat` é usado apenas para iniciar o script PowerShell com permissões administrativas.
+The `.bat` file is used only to start the PowerShell script with administrative permissions.
 
-## Requisitos
+## Requirements
 
-* Windows 10 ou superior.
-* PowerShell 5.1 ou superior.
-* Permissão de administrador.
-* Máquina de destino acessível pela rede.
-* Porta TCP liberada localmente pelo script.
+* Windows 10 or newer.
+* PowerShell 5.1 or newer.
+* Administrator permission.
+* Destination machine reachable over the network.
+* TCP port allowed locally by the script.
 
-## Como usar
+## How to Use
 
-1. Baixe os arquivos do projeto.
-2. Mantenha o `.bat` e o `.ps1` na mesma pasta.
-3. Execute o arquivo `.bat`.
-4. Aceite o prompt de administrador do Windows.
-5. Preencha os campos:
+1. Download the project files.
+2. Keep the `.bat` and `.ps1` files in the same folder.
+3. Run the `.bat` file.
+4. Accept the Windows administrator prompt.
+5. Fill in the fields:
 
-   * IP do Windows/remetente;
-   * IP da máquina destino;
-   * arquivo que será compartilhado;
-   * porta TCP.
-6. Clique em **Iniciar compartilhamento**.
-7. Copie o comando `wget` gerado.
-8. Execute o comando na máquina destino.
+   * Windows/source IP address;
+   * destination machine IP address;
+   * file to be shared;
+   * TCP port.
+6. Click **Start sharing**.
+7. Copy the generated `wget` command.
+8. Run the command on the destination machine.
 
-Exemplo de comando gerado:
+Example of a generated command:
 
 ```bash
-wget "http://192.168.56.1:8000/arquivo.zip"
+wget "http://192.168.56.1:8000/file.zip"
 ```
 
-## Exemplo de uso
+## Usage Example
 
-Cenário:
+Scenario:
 
-* Windows/remetente: `192.168.56.1`
-* Linux/VM destino: `192.168.56.101`
-* Porta: `8000`
-* Arquivo: `arquivo.zip`
+* Windows/source machine: `192.168.56.1`
+* Linux/destination VM: `192.168.56.101`
+* Port: `8000`
+* File: `file.zip`
 
-O script gera uma URL HTTP temporária e permite que a máquina destino baixe o arquivo com `wget`.
+The script generates a temporary HTTP URL and allows the destination machine to download the file using `wget`.
 
-## Segurança
+## Security
 
-Este projeto foi feito para uso local, controlado e temporário.
+This project was designed for local, controlled, and temporary use.
 
-Pontos importantes:
+Important points:
 
-* O script abre uma porta HTTP temporária no Windows.
-* O acesso é limitado ao IP de destino informado.
-* Não há autenticação por usuário e senha.
-* A proteção é baseada em restrição de IP e regra de firewall.
-* Não é recomendado usar em redes públicas ou desconhecidas.
-* O compartilhamento deve ser encerrado após a transferência.
+* The script opens a temporary HTTP port on Windows.
+* Access is limited to the specified destination IP address.
+* There is no username/password authentication.
+* Protection is based on IP restriction and a firewall rule.
+* It is not recommended for use on public or unknown networks.
+* Sharing should be stopped after the transfer is complete.
 
-Ao clicar em **Parar** ou fechar a janela, o script remove a regra temporária criada no Firewall do Windows.
+When clicking **Stop** or closing the window, the script removes the temporary Windows Firewall rule.
 
-## Por que precisa de administrador?
+## Why Administrator Permission Is Required
 
-O script precisa ser executado como administrador porque cria e remove regras temporárias no Firewall do Windows usando `New-NetFirewallRule` e `Remove-NetFirewallRule`.
+The script needs to run as administrator because it creates and removes temporary Windows Firewall rules using `New-NetFirewallRule` and `Remove-NetFirewallRule`.
 
-Sem permissão administrativa, o Windows não permite alterar regras de firewall.
+Without administrative permission, Windows does not allow firewall rules to be changed.
 
-## Sobre ExecutionPolicy Bypass
+## About ExecutionPolicy Bypass
 
-O arquivo `.bat` pode executar o PowerShell com:
+The `.bat` file may run PowerShell with:
 
 ```powershell
 -ExecutionPolicy Bypass
 ```
 
-Isso afeta somente o processo atual do PowerShell. A política de execução do sistema não é alterada permanentemente.
+This only affects the current PowerShell process. The system execution policy is not permanently changed.
 
-Esse parâmetro é usado para permitir que o script rode sem exigir alteração manual na política de execução do Windows.
+This parameter is used to allow the script to run without requiring the user to manually change the Windows execution policy.
 
-## Limitações
+## Limitations
 
-* Compartilha apenas um arquivo por vez.
-* Não possui autenticação.
-* Não possui HTTPS.
-* Não é indicado para exposição na internet.
-* O acesso depende da conectividade entre origem e destino.
-* Firewalls externos, NAT ou regras de rede podem bloquear a conexão.
+* Shares only one file at a time.
+* Does not include authentication.
+* Does not use HTTPS.
+* Not intended to be exposed to the internet.
+* Access depends on network connectivity between source and destination.
+* External firewalls, NAT, or network rules may block the connection.
 
-## Estrutura técnica
+## Technical Structure
 
-O script usa:
+The script uses:
 
-* `System.Windows.Forms` para a interface gráfica.
-* `System.Net.HttpListener` para o servidor HTTP local.
-* `New-NetFirewallRule` para liberar temporariamente a porta.
-* `Start-Job` para manter o servidor HTTP em segundo plano.
-* `wget` como comando de download na máquina destino.
+* `System.Windows.Forms` for the graphical interface.
+* `System.Net.HttpListener` for the local HTTP server.
+* `New-NetFirewallRule` to temporarily allow the port.
+* `Start-Job` to keep the HTTP server running in the background.
+* `wget` as the download command on the destination machine.
 
-## Encerramento do compartilhamento
+## Stopping the Share
 
-O compartilhamento pode ser encerrado de duas formas:
+The share can be stopped in two ways:
 
-* clicando no botão **Parar**;
-* fechando a janela do aplicativo.
+* by clicking the **Stop** button;
+* by closing the application window.
 
-Em ambos os casos, o script tenta parar o job em segundo plano e remover a regra temporária do firewall.
+In both cases, the script attempts to stop the background job and remove the temporary firewall rule.
 
-## Aviso
+## Notice
 
-Use apenas em ambientes autorizados.
+Use only in authorized environments.
 
-Este projeto é voltado para administração, suporte técnico, laboratório, testes e transferência temporária de arquivos entre máquinas conhecidas.
-
-
+This project is intended for administration, technical support, lab testing, and temporary file transfers between known machines.
